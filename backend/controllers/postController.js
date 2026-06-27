@@ -5,7 +5,14 @@ async function getUserPosts(req, res) {
         const id = req.user; 
         const posts = await prisma.post.findMany({
             where: { userId: Number(id) },
-            orderBy: { createdAt: 'desc' } 
+            orderBy: { createdAt: 'desc' },
+            include:{ 
+               _count:{
+                select:{
+                    likes:true
+                }
+               }
+            }
         });
         return res.json({ posts });
     } catch (error) {
@@ -19,7 +26,14 @@ async function getPostsByAuthor(req, res) {
         const { userId } = req.params;
         const posts = await prisma.post.findMany({
             where: { userId: Number(userId) },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { createdAt: 'desc' },
+            include:{
+                _count:{
+                    select:{
+                        likes:true
+                    }
+                }
+            }
         });
         return res.json({ posts });
     } catch (error) {
