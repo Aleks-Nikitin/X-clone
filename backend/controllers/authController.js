@@ -6,7 +6,7 @@ async function authCallbackGithub(req,res,next) {
     try {
         const userFound = req.user;
         if(!userFound){
-            return res.redirect(`${process.env.FRONTEND_URL}/login?error=no_user`)
+            return res.redirect(`${process.env.FRONTEND_URL}/?error=no_user`)
         }
         const accessToken= jwt.sign({id:userFound.id},
         process.env.ACCESS_TOKEN_SECRET,
@@ -30,7 +30,7 @@ async function authCallbackGithub(req,res,next) {
         return res.redirect(`${process.env.FRONTEND_URL}/`)
 
         } catch (error) {
-            return res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`)
+            return res.redirect(`${process.env.FRONTEND_URL}/?error=server_error`)
         }
 }
 async function verifyJWT(req,res,next) {
