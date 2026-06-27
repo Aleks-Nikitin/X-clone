@@ -3,6 +3,6 @@ import userController from "../controllers/userController.js";
 import authController from "../controllers/authController.js";
 const userRotuer= Router();
 
-userRotuer.get("/me", authController.verifyJWT, userController.getMe)
-
+userRotuer.get("/me", userController.getMe)
+userRotuer.get("/:targetUserId/follow",userController.toggleFollowing);
 export default userRotuer;
