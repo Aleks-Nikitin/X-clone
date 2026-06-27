@@ -1,3 +1,4 @@
+import {prisma} from "../lib/prisma.js"
 async function getMe(req,res) {
     const id=req.user;
     const user = await prisma.user.findUnique({
