@@ -9,7 +9,6 @@ async function getMe(req,res) {
     return res.json({user:user});
     
 }
-
 export default {
     getMe
 }

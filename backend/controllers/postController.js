@@ -95,11 +95,66 @@ async function deletePost(req, res) {
         return res.sendStatus(500);
     }
 }
+async function toggleLike(req, res) {
+    try {
+        const id = req.user;
+        const { postId } = req.params;
+        const existingLike = await prisma.like.findUnique({
+            where: {
+                userId_postId: { 
+                    userId: Number(id),
+                    postId: Number(postId)
+                }
+            }
+        });
+
+        if (existingLike) {
+            await prisma.like.delete({
+                where: {
+                    userId_postId: {
+                        userId: Number(id),
+                        postId: Number(postId)
+                    }
+                }
+            });
+            return res.json({ msg: "Like removed", isLiked: false });
+        } else {
+            await prisma.like.create({
+                data: {
+                    userId: Number(id),
+                    postId: Number(postId)
+                }
+            });
+            return res.status(201).json({ msg: "Like added", isLiked: true });
+        }
+    } catch (error) {
+        return res.sendStatus(500);
+    }
+}
+
+async function getLikedPosts(req, res) {
+    try {
+        const id = req.user;
+        const likedPosts = await prisma.post.findMany({
+            where: {
+                likes: {
+                    some: { userId: Number(id) }
+                }
+            }
+        });
+        return res.json({ posts: likedPosts });
+    } catch (error) {
+        return res.sendStatus(500);
+    }
+}
+
 
 export default {
     getUserPosts,
     updatePost,
     deletePost,
     createPost,
-    getPostsByAuthor
+    getPostsByAuthor,
+    toggleLike,
+    getLikedPosts
 };
