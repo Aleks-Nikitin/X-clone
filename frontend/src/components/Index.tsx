@@ -1,5 +1,4 @@
 import { useAuth } from "../AuthContext";
-
 function Index() {
     const { user, isLoading } = useAuth();
 
@@ -8,15 +7,9 @@ function Index() {
         return <h1>Loading profile...</h1>;
     }
 
-    if (!user) {
-        return (
-            <h1>Not authenticated</h1>
-        );
-    }
-
     return (
         // 💡 Fixed casing from 'fullname' to 'fullName'
-        <h1>Welcome, {user.fullName || "User"}!</h1>
+        <h1>Welcome, {user?.fullName || "User"}!</h1>
     );
 }
 

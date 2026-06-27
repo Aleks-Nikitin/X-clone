@@ -1,5 +1,6 @@
 
 import { useSearchParams } from 'react-router'; 
+import xPic from "../assets/twitter.png"
 
 function Login(){
 
@@ -22,7 +23,8 @@ function Login(){
 
   return (
     <section className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-4">Log in</h1>
+
+      <h1 className="text-2xl font-semibold mb-4">See what's happening in the world right now</h1>
 
       <form onSubmit={onSubmit} className="space-y-4">
 
@@ -41,6 +43,7 @@ function Login(){
            </ul>
        
      )}
+     <img src={xPic} alt="" width={"200px"}/>
     </section>
   )
 }
