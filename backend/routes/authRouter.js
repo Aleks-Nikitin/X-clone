@@ -1,9 +1,9 @@
 import { Router } from "express";
-import passport, { session } from "passport"
+import passport from "passport"
 import authController from "../controllers/authController.js";
 const authRotuer= Router();
 
-authRotuer.get("/github/",
+authRotuer.get("/github",
      passport.authenticate('github',{scope:['user:email'],session:false})
 )
 authRotuer.get("/github/callback",

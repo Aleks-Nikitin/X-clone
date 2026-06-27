@@ -2,12 +2,24 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter,RouterProvider } from 'react-router'
 import './index.css'
+import Login from './components/Login.tsx'
 import App from './App.tsx'
+import Index from './components/Index.tsx'
 
 const router =createBrowserRouter([
   {
     path:"/",
     element: <App></App>,
+    children:[
+      {
+        index:true,
+        element: <Index></Index>
+      },
+      {
+        path:"/login",
+        element: <Login></Login>
+      },
+    ]
   }
 ])
 

@@ -27,8 +27,7 @@ async function authCallbackGithub(req,res,next) {
             httpOnly:true,
             maxAge:2*24*60*60*1000,
         });
-        return res.redirect(`${process.env.FRONTEND_URL}/auth-success?token=${accessToken}`)
-        res.json({accessToken:accessToken});
+        return res.redirect(`${process.env.FRONTEND_URL}/`)
 
         } catch (error) {
             return res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`)
