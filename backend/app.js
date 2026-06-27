@@ -4,6 +4,7 @@ import userRotuer from "./routes/userRouter.js";
 import refreshRouter from "./routes/refreshRouter.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import logoutRouter from "./routes/logoutRouter.js";
 import "./controllers/passportController.js"
 const app =express();
 app.use(cors({
@@ -15,6 +16,7 @@ app.use(express.urlencoded({extended:true}));
 app.use("/refresh",refreshRouter);
 app.use("/auth",authRotuer);
 app.use('/users',userRotuer);
+app.use("/logout",logoutRouter);
 
 app.listen(3000,"localhost",(err)=>{
     if(err){
