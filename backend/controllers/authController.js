@@ -1,3 +1,6 @@
+import {prisma} from "../lib/prisma.js"
+import jwt from "jsonwebtoken";
+import "dotenv/config";
 
 async function authCallbackGithub(req,res,next) {
     try {
@@ -31,6 +34,22 @@ async function authCallbackGithub(req,res,next) {
             return res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`)
         }
 }
+async function verifyJWT(req,res,next) {
+    const authHeader = req.headers["authorization"];
+    if(!authHeader) return res.sendStatus(401);
+    const token = authHeader.split(" ")[1];
+    jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err,decoded)=>{
+            if(err) return res.sendStatus(403); //invalid token
+            req.user=decoded.id;
+            next()
+        }
+    )
+
+}
 export default{
-    authCallbackGithub
+    authCallbackGithub,
+    verifyJWT
 }
