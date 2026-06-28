@@ -6,6 +6,8 @@ import './index.css'
 import Login from './components/Login.tsx'
 import App from './App.tsx'
 import Index from './components/Index.tsx'
+import Content from './components/Content.tsx'
+import PostDetail from './components/PostDetail.tsx'
 
 const router =createBrowserRouter([
   {
@@ -13,8 +15,17 @@ const router =createBrowserRouter([
     element: <App></App>,
     children:[
       {
-        index:true,
-        element: <Index></Index>
+        element: <Index></Index>,
+        children:[
+          {
+            index:true,
+            element: <Content></Content>
+          },
+          {
+            path:"post/:postId",
+            element: <PostDetail></PostDetail>
+          },
+        ]
       },
       {
         path:"/login",

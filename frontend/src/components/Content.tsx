@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 import {
   MessageCircle,
@@ -10,6 +11,7 @@ import profile_pic from "../assets/profile_default.png";
 import ReplyModal from "./ReplyModal";
 
 function Content() {
+      const navigate = useNavigate();
       const { authFetch } = useAuth();
   const [feed,setFeed] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"foryou" | "following">("foryou");
@@ -140,6 +142,7 @@ function Content() {
           return (
           <article
             key={post.id}
+            onClick={() => navigate(`/post/${post.id}`, { state: { post } })}
             className="border-b border-gray-800 p-4 flex gap-3 hover:bg-white/3 cursor-pointer transition-colors text-left"
           >
             <img src={profile_pic} className="w-10 h-10 rounded-full"/>

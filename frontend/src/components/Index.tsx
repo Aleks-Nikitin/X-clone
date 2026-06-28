@@ -1,11 +1,11 @@
-import Content from "./Content";
+import { Outlet } from "react-router";
 import RightSidebar from "./RightSidebar";
 
 function Index() {
   return (
     <div className="flex w-full justify-center">
       <div className="w-full max-w-[600px] shrink-0 border-r border-gray-800">
-        <Content />
+        <Outlet />
       </div>
       <aside className="hidden xl:block w-[350px] shrink-0 px-4">
         <RightSidebar />

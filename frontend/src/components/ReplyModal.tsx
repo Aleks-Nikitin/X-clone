@@ -12,12 +12,10 @@ type ReplyModalProps = {
 function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
   const { authFetch } = useAuth();
   const [reply, setReply] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
   async function onSubmit(e: any) {
     e.preventDefault();
-    if (!reply.trim() || submitting) return;
-    setSubmitting(true);
+    if (!reply.trim()) return;
     try {
       const response = await authFetch(
         `${import.meta.env.VITE_BACKEND}/comments/${post.id}`,
@@ -40,8 +38,6 @@ function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
       onClose();
     } catch (error) {
       console.error(error);
-    } finally {
-      setSubmitting(false);
     }
   }
 
@@ -102,7 +98,7 @@ function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
           <div className="flex justify-end pt-3 border-t border-gray-800 mt-2">
             <button
               type="submit"
-              disabled={!reply.trim() || submitting}
+              disabled={!reply.trim()}
               className="bg-sky-500 text-white font-bold px-4 py-1.5 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer hover:bg-sky-600"
             >
               Reply
