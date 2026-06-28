@@ -21,7 +21,32 @@ async function getUserPosts(req, res) {
 }
 async function getAllPosts(req,res) {
     try {
-        const posts= await prisma.post.findMany();
+        const posts= await prisma.post.findMany({
+            take:5,
+            include:{
+            user:{
+                select:{
+                    username:true,
+                    fullName:true,
+                    picture:true,
+                    id:true
+                }
+            },
+            comments:{
+                select:{
+                    createdAt:true,
+                    text:true,
+                    id:true,
+                    userId:true,
+                }
+            },
+            _count:{
+                select:{
+                    comments:true,
+                    likes:true
+                }
+            }
+        }});
         return res.json({posts});
     } catch (error) {
         return res.sendStatus(500);
