@@ -2,7 +2,7 @@ import {prisma }from "../lib/prisma.js"
 async function createComment(req,res){
 
     try {
-    const {id}=req.user;
+    const id = req.user;
     const {text}= req.body;
     const {postId}=req.params
     if (!text || text.trim() === "") {
@@ -11,12 +11,13 @@ async function createComment(req,res){
         const com = await prisma.comment.create({
         data:{
             userId:Number(id),
-            text:msg,
+            text:text,
             postId:Number(postId)
         }
     })
     res.json({com:com});
     } catch (error) {
+        console.error(error);
         res.sendStatus(500);
     }
 
@@ -84,7 +85,7 @@ async function deleteComment(req,res) {
 }
 async function updateComment(req,res) {
     try {
-        const {id}=req.user
+        const id = req.user
          const {commentId}=req.params
         const {msg}=req.body;
              const comment = await prisma.comment.findUnique({
