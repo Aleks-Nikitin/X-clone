@@ -19,7 +19,14 @@ async function getUserPosts(req, res) {
         return res.sendStatus(500);
     }
 }
-
+async function getAllPosts(req,res) {
+    try {
+        const posts= await prisma.post.findMany();
+        return res.json({posts});
+    } catch (error) {
+        return res.sendStatus(500);
+    }
+}
 
 async function getPostsByAuthor(req, res) {
     try {
@@ -170,5 +177,6 @@ export default {
     createPost,
     getPostsByAuthor,
     toggleLike,
-    getLikedPosts
+    getLikedPosts,
+    getAllPosts
 };

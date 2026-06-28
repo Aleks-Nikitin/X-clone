@@ -19,14 +19,14 @@ app.use(cookieParser());
 app.use(express.urlencoded({extended:true}));
 app.use("/refresh",refreshRouter);
 app.use("/auth",authRotuer);
-
+app.use("/logout",logoutRouter);
 app.use(authController.verifyJWT);
 
 app.use('/users',userRotuer);
 app.use('/posts',postRouter);
 app.use("/chats",chatRouter)
 app.use('/comments',commentRouter)
-app.use("/logout",logoutRouter);
+
 
 app.listen(3000,"localhost",(err)=>{
     if(err){
