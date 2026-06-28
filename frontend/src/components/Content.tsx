@@ -8,12 +8,6 @@ import {
 import { useAuth } from "../AuthContext";
 import profile_pic from "../assets/profile_default.png";
 
-function formatCount(n: number) {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
-  return String(n);
-}
-
-
 function Content() {
       const { user, authFetch } = useAuth();
   const [feed,setFeed] = useState([]);
@@ -22,7 +16,7 @@ function Content() {
   useEffect(()=>{
       async function generateFeed() {
       try {
-        const response= await authFetch(`${import.meta.env.VITE_BACKEND}/posts/me`,{
+        const response= await authFetch(`${import.meta.env.VITE_BACKEND}/posts`,{
             method:"GET",
         })
         if (!response.ok) {
@@ -32,8 +26,8 @@ function Content() {
         if(!data){
             throw new Error("feed creation failed")
         }
-       console.log(data);
        const {posts}=data;
+       console.log(posts);
        setFeed(posts);
     } catch (error) {
         console.error(error);
@@ -122,7 +116,24 @@ function Content() {
       </div>
 
       <div>
-        {feed.map((post) => (
+        {feed.map((post) => {
+          const {user} = post;
+          const {comments} = post;
+          const {_count} =post;
+          const formatPrismaDate = (dateString) => {
+            if (!dateString) return '';
+            
+            const dateObj = new Date(dateString);
+            
+            return new Intl.DateTimeFormat('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            }).format(dateObj);
+          };
+          return (
           <article
             key={post.id}
             className="border-b border-gray-800 p-4 flex gap-3 hover:bg-white/3 cursor-pointer transition-colors text-left"
@@ -130,10 +141,10 @@ function Content() {
             <img src={profile_pic} className="w-10 h-10 rounded-full"/>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1 flex-wrap">
-                <span className="font-bold truncate">{post.fullName}</span>
-                <span className="text-gray-500 truncate">@{post.username}</span>
+                <span className="font-bold truncate">{user.fullName}</span>
+                <span className="text-gray-500 truncate">@{user.username}</span>
                 <span className="text-gray-500">·</span>
-                <span className="text-gray-500">{post.createdAt}</span>
+                <span className="text-gray-500">{formatPrismaDate(post.createdAt)}</span>
               </div>
               <p className="mt-1 whitespace-pre-wrap wrap-break-word">{post.text}</p>
               <div className="flex justify-start gap-5 mt-3 max-w-md text-gray-500">
@@ -141,19 +152,20 @@ function Content() {
                   <span className="p-2 rounded-full group-hover:bg-sky-500/10">
                     <MessageCircle size={18} />
                   </span>
-                  <span className="text-xs">{formatCount(post.comments)}</span>
+                  <span className="text-xs">{_count.comments}</span>
                 </button>
                 <button type="button" className="flex items-center gap-1 hover:text-pink-500 group">
                   <span className="p-2 rounded-full group-hover:bg-pink-500/10">
                     <Heart size={18} />
                   </span>
-                  <span className="text-xs">{formatCount(post.likes)}</span>
+                  <span className="text-xs">{_count.likes}</span>
                 </button> 
 
              </div>
              </div>
            </article>
-        ))}
+        )
+        })}
       </div>
     </div>
   );
