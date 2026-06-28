@@ -1,16 +1,7 @@
-import { useAuth } from "../AuthContext";
+import Content from "./Content";
+
 function Index() {
-    const { user, isLoading } = useAuth();
-
-    // 💡 Prevent flash of "not authenticated" while the context bootstraps
-    if (isLoading) {
-        return <h1>Loading profile...</h1>;
-    }
-
-    return (
-        // 💡 Fixed casing from 'fullname' to 'fullName'
-        <h1>Welcome, {user?.fullName || "User"}!</h1>
-    );
+    return <Content />;
 }
 
 export default Index;

@@ -10,12 +10,12 @@ return(
 )
 }else{
   return (
-    <>
+    <div className='flex min-h-screen text-left'>
     <Navbar></Navbar>
-      <main>
+      <main className="flex-1 max-w-[600px] border-r border-gray-800">
         <Outlet/>
       </main>
-    </>
+    </div>
   )}
 }
 
