@@ -22,29 +22,28 @@ function Login(){
   }
 
   return (
-    <section className="max-w-md mx-auto p-6">
-
-      <h1 className="text-2xl font-semibold mb-4">See what's happening in the world right now</h1>
-
-      <form onSubmit={onSubmit} className="space-y-4">
-
-   
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white rounded px-3 py-2 disabled:opacity-60 hover:font-bold cursor-pointer"
-        >
-          Sign in with GitHub
-        </button>
-      </form>
-        {errorCode && errorMessages[errorCode] && (
-      
-           <ul className='text-l text-red-500 text-start '>
-                  <li>{errorMessages[errorCode]}</li>
-           </ul>
-       
-     )}
-     <img src={xPic} alt="" width={"200px"}/>
-    </section>
+    <div className="flex justify-center items-center">
+        <section className="max-w-md p-6">
+          <h1 className="text-6xl font-semibold mb-4 text-white">See what's happening in the world right now</h1>
+          <form onSubmit={onSubmit} className="space-y-5 py-7">
+            <button
+              type="submit"
+              className=" rounded-3xl transition-[font-weight] duration-200 ease-in-out [font-weight:400] hover:[font-weight:700] w-full bg-indigo-600 text-white rounded px-8 py-6 disabled:opacity-60 cursor-pointer text-4xl"
+            >
+              Sign in with GitHub
+            </button>
+          </form>
+            {errorCode && errorMessages[errorCode] && (
+        
+               <ul className='text-l text-red-500 text-start '>
+                      <li>{errorMessages[errorCode]}</li>
+               </ul>
+        
+         )}
+        
+        </section>
+        <img src={xPic} alt="" width={"700px"} className=''/>
+    </div>
   )
 }
 

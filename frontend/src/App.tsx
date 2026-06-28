@@ -3,8 +3,8 @@ import { useAuth } from './AuthContext.tsx'
 import Navbar from './components/Navbar.tsx'
 import Login from './components/Login.tsx';
 function App() {
-const { user } = useAuth();
-if(!user){
+const { user,isLoading } = useAuth();
+if(!user || isLoading){
 return(
   <Login></Login>
 )
