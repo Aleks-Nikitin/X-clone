@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link,useNavigate } from "react-router"
 import { useAuth } from "../AuthContext.tsx"
 import { House,Search,UserPlus,MessageCircle,UserRound} from 'lucide-react';
-import xPic from "../assets/twitter.png"
+import XLogo from "./XLogo"
 function Navbar() {
     const {logout,user} = useAuth();
      const navigate = useNavigate();
@@ -13,9 +13,9 @@ function Navbar() {
     navigate("/");
   }
     return (
-          <header className="flex flex-col h-screen w-[275px] shrink-0 p-4 border-r border-gray-800">
+          <header className="sticky top-0 self-start flex flex-col h-screen w-[275px] shrink-0 p-4 border-r border-gray-800 overflow-y-auto">
             <div className="flex flex-col text-white items-baseline text-xl gap-2.5 flex-1">
-                <Link to={"/"}><img src={xPic} alt="" width={"50px"} className="transition-transform duration-200 hover:scale-110"/></Link>
+                <Link to={"/"} className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors"><XLogo size={28} /></Link>
                 <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     <House size={40} strokeWidth={1.25} />
                     <h2>Home</h2>

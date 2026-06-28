@@ -12,7 +12,7 @@ return(
   return (
     <div className='flex min-h-screen text-left'>
     <Navbar></Navbar>
-      <main className="flex-1 max-w-[600px] border-r border-gray-800">
+      <main className="flex-1 min-w-0">
         <Outlet/>
       </main>
     </div>
