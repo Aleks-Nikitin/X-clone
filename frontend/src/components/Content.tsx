@@ -7,14 +7,16 @@ import {
 } from "lucide-react";
 import { useAuth } from "../AuthContext";
 import profile_pic from "../assets/profile_default.png";
+import ReplyModal from "./ReplyModal";
 
 function Content() {
-      const { user, authFetch } = useAuth();
-  const [feed,setFeed] = useState([]);
+      const { authFetch } = useAuth();
+  const [feed,setFeed] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"foryou" | "following">("foryou");
   const [draft, setDraft] = useState("");
-  useEffect(()=>{
-      async function generateFeed() {
+  const [replyPost, setReplyPost] = useState<any>(null);
+
+  async function generateFeed() {
       try {
         const response= await authFetch(`${import.meta.env.VITE_BACKEND}/posts`,{
             method:"GET",
@@ -33,6 +35,8 @@ function Content() {
         console.error(error);
     }
   }
+
+  useEffect(()=>{
     generateFeed()
   },[authFetch])
  async function onSubmit(e:any) {
@@ -52,6 +56,7 @@ function Content() {
         }
        console.log("post created");
        setDraft("");
+       generateFeed();
     } catch (error) {
         console.error(error);
     }
@@ -118,9 +123,8 @@ function Content() {
       <div>
         {feed.map((post) => {
           const {user} = post;
-          const {comments} = post;
           const {_count} =post;
-          const formatPrismaDate = (dateString) => {
+          const formatPrismaDate = (dateString: string) => {
             if (!dateString) return '';
             
             const dateObj = new Date(dateString);
@@ -148,7 +152,14 @@ function Content() {
               </div>
               <p className="mt-1 whitespace-pre-wrap wrap-break-word">{post.text}</p>
               <div className="flex justify-start gap-5 mt-3 max-w-md text-gray-500">
-                <button type="button" className="flex items-center gap-1 hover:text-sky-500 group">
+                <button
+                  type="button"
+                  className="flex items-center gap-1 hover:text-sky-500 group"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setReplyPost(post);
+                  }}
+                >
                   <span className="p-2 rounded-full group-hover:bg-sky-500/10">
                     <MessageCircle size={18} />
                   </span>
@@ -167,6 +178,13 @@ function Content() {
         )
         })}
       </div>
+      {replyPost && (
+        <ReplyModal
+          post={replyPost}
+          onClose={() => setReplyPost(null)}
+          onSuccess={generateFeed}
+        />
+      )}
     </div>
   );
 }

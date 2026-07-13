@@ -1,9 +1,7 @@
-import {useState } from "react";
 import { Search, MoreHorizontal } from "lucide-react";
 import profile_pic from "../assets/profile_default.png";
 
 function RightSidebar() {
-  const [suggestions,setSuggestions]=useState();
   return (
     <div className="sticky top-0 py-2 space-y-4 text-white">
       <label className="relative block">
