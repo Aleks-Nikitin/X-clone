@@ -19,7 +19,9 @@ async function createOrFindChat(req,res) {
       ],
     },
     include: {
-      messages: true,
+      messages: {
+        orderBy: { createdAt: "asc" },
+      },
     },
   });
 
@@ -39,7 +41,9 @@ async function createOrFindChat(req,res) {
       },
     },
     include: {
-      messages: true,
+      messages: {
+        orderBy: { createdAt: "asc" },
+      },
     },
   });
    return res.status(201).json({

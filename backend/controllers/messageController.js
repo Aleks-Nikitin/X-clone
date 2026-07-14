@@ -18,7 +18,7 @@ async function createMsg(req,res) {
         
         res.json({
             text:msg.text,
-            userId:msg.id,
+            userId:msg.userId,
             chatId:msg.chatId,
             id:msg.id,
             createdAt:msg.createdAt})
