@@ -30,6 +30,9 @@ function Chat() {
   const { user: me, authFetch } = useAuth();
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
+  const [activeChats, setActiveChats] = useState<ChatUser[]>([]); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
   const [chatId, setChatId] = useState<number | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
@@ -37,7 +40,7 @@ function Chat() {
   async function loadUsers() {
     try {
       const response = await authFetch(
-        `${import.meta.env.VITE_BACKEND}/users/suggestions`,
+        `${import.meta.env.VITE_BACKEND}/users/all`,
         { method: "GET" }
       );
       if (!response.ok) {
@@ -53,7 +56,12 @@ function Chat() {
   useEffect(() => {
     loadUsers();
   }, [authFetch]);
-
+  const suggestions = searchQuery.trim() === "" 
+    ? [] 
+    : users.filter(user => 
+        user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.username.toLowerCase().includes(searchQuery.toLowerCase())
+      );
   async function openChat(targetUser: ChatUser) {
     try {
       const response = await authFetch(
@@ -70,6 +78,15 @@ function Chat() {
     } catch (error) {
       console.error(error);
     }
+  }
+   function handleSelectUser(targetUser: ChatUser) {
+    if (!activeChats.some(u => u.id === targetUser.id)) {
+      setActiveChats(prev => [...prev, targetUser]);
+    }
+    
+    setSearchQuery("");
+    setShowDropdown(false);
+    openChat(targetUser);
   }
 
   async function onSubmit(e: any) {
@@ -100,24 +117,54 @@ function Chat() {
       <section className="w-[360px] shrink-0 border-r border-gray-800 min-h-screen">
         <header className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-gray-800 p-4">
           <h1 className="text-xl font-bold text-left">Messages</h1>
-          <label className="relative block mt-4">
+          <div className="relative mt-4">
             <Search
               size={18}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
             />
-            <input
+           <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowDropdown(true);
+              }}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)} // delay to allow clicks
               placeholder="Search Direct Messages"
               className="w-full bg-[#202327] rounded-full py-3 pl-12 pr-4 outline-none placeholder-gray-500 text-sm"
             />
-          </label>
+
+          
+          {showDropdown && suggestions.length > 0 && (
+              <div className="absolute left-0 right-0 mt-2 max-h-60 overflow-y-auto bg-black border border-gray-800 rounded-xl shadow-2xl z-30">
+                {suggestions.map((user) => (
+                  <button
+                    key={user.id}
+                    type="button"
+                    onMouseDown={() => handleSelectUser(user)} 
+                    className="w-full p-3 flex gap-3 text-left hover:bg-white/5 transition-colors border-b border-gray-900 last:border-0"
+                  >
+                    <img
+                      src={user.picture ? user.picture : profile_pic}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm truncate">{user.fullName}</p>
+                      <p className="text-gray-500 text-xs truncate">@{user.username}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+            </div>
         </header>
 
-        <div>
-          {users.length === 0 && (
+        <div className="flex-1 overflow-y-auto">
+          {activeChats.length === 0 && (
             <p className="p-4 text-gray-500 text-left">No people to message right now.</p>
           )}
-          {users.map((user) => (
+          {activeChats.map((user) => (
             <button
               key={user.id}
               type="button"
@@ -138,6 +185,7 @@ function Chat() {
             </button>
           ))}
         </div>
+
       </section>
 
       <section className="flex-1 min-w-0 min-h-screen flex flex-col">
