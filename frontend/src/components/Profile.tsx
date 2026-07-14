@@ -64,6 +64,20 @@ function Profile() {
     loadPosts();
   }, [userId, authFetch]);
 
+  useEffect(() => {
+    function refreshOwnProfilePosts() {
+      if (isOwnProfile) {
+        void loadPosts();
+      }
+    }
+
+    window.addEventListener("post-created", refreshOwnProfilePosts);
+
+    return () => {
+      window.removeEventListener("post-created", refreshOwnProfilePosts);
+    };
+  }, [isOwnProfile]);
+
   async function toggleFollow() {
     try {
       const response = await authFetch(

@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { Link,useNavigate } from "react-router"
 import { useAuth } from "../AuthContext.tsx"
-import { House,Search,UserPlus,MessageCircle,UserRound} from 'lucide-react';
+import { House,UserPlus,MessageCircle,UserRound} from 'lucide-react';
 import XLogo from "./XLogo"
 import profile_pic from "../assets/profile_default.png";
-function Navbar() {
+type NavbarProps = {
+  onPostClick: () => void;
+}
+
+function Navbar({ onPostClick }: NavbarProps) {
     const {logout,user} = useAuth();
      const navigate = useNavigate();
      const [showUserMenu, setShowUserMenu] = useState(false);
@@ -37,7 +41,11 @@ function Navbar() {
                 </Link>  
                  <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     
-                    <button className="bg-white text-black text-[1rem] rounded-4xl border-8 px-15.5 py-2 cursor-pointer">
+                    <button
+                      type="button"
+                      onClick={onPostClick}
+                      className="bg-white text-black text-[1rem] rounded-4xl border-8 px-15.5 py-2 cursor-pointer"
+                    >
                         <h2 className="">Post</h2>
                     </button>
         
