@@ -1,4 +1,4 @@
-import { Search, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import profile_pic from "../assets/profile_default.png";
