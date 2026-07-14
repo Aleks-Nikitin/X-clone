@@ -22,6 +22,42 @@ async function getMe(req,res) {
     })
     return res.json({user:user});   
 }
+async function getSugestedFollowing(req,res) {
+    try {
+        const id = req.user;
+        const me = await prisma.user.findUnique({
+            where:{
+                id:Number(id)
+            },
+            select:{
+                following:{
+                    select:{
+                        id:true
+                    }
+                }
+            }
+        })
+        const followedIds = me ? me.following.map((user)=> user.id) : [];
+        const users = await prisma.user.findMany({
+            take:30,
+            where:{
+                id:{
+                    not:Number(id),
+                    notIn: followedIds
+                }
+            },
+            select:{
+                username:true,
+                fullName:true,
+                id:true,
+                picture:true,
+            }
+        })
+        return res.json({users});
+    } catch (error) {
+        return res.sendStatus(500);
+    }
+}
 
 async function getUserById(req,res) {
     try {
@@ -130,5 +166,6 @@ async function toggleFollowing(req,res) {
 export default {
     getMe,
     getUserById,
-    toggleFollowing
+    toggleFollowing,
+    getSugestedFollowing
 }
