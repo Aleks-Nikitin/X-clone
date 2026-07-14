@@ -21,7 +21,7 @@ function PostDetail() {
   const navigate = useNavigate();
   const { authFetch } = useAuth();
 
-  const post = location.state?.post;
+  const [post, setPost] = useState<any>(location.state?.post);
   const [comments, setComments] = useState<any[]>([]);
   const [reply, setReply] = useState("");
 
@@ -44,6 +44,33 @@ function PostDetail() {
   useEffect(() => {
     loadComments();
   }, [postId, authFetch]);
+
+  async function toggleLike() {
+    try {
+      const response = await authFetch(
+        `${import.meta.env.VITE_BACKEND}/posts/${postId}/like`,
+        { method: "GET" }
+      );
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      const data = await response.json();
+      if (!data) {
+        throw new Error("like failed");
+      }
+
+      setPost((currentPost: any) => ({
+        ...currentPost,
+        isLiked: data.isLiked,
+        _count: {
+          ...currentPost._count,
+          likes: Math.max(0, currentPost._count.likes + (data.isLiked ? 1 : -1)),
+        },
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async function onSubmit(e: any) {
     e.preventDefault();
@@ -69,6 +96,14 @@ function PostDetail() {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  if (!post) {
+    return (
+      <div className="text-white min-h-screen p-4">
+        <p className="text-gray-500">Loading post...</p>
+      </div>
+    );
   }
 
   const { user, _count } = post;
@@ -110,10 +145,16 @@ function PostDetail() {
             <MessageCircle size={18} />
             <span className="text-xs">{comments.length || _count?.comments || 0}</span>
           </span>
-          <span className="flex items-center gap-1">
-            <Heart size={18} />
+          <button
+            type="button"
+            onClick={toggleLike}
+            className={`flex items-center gap-1 group transition-colors ${post.isLiked ? "text-pink-500" : "text-gray-500 hover:text-pink-500"}`}
+          >
+            <span className={`p-2 rounded-full ${post.isLiked ? "bg-pink-500/10" : "group-hover:bg-pink-500/10"}`}>
+              <Heart size={18} fill={post.isLiked ? "currentColor" : "none"} />
+            </span>
             <span className="text-xs">{_count?.likes || 0}</span>
-          </span>
+          </button>
         </div>
       </article>
 
