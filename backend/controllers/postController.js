@@ -199,7 +199,50 @@ async function toggleLike(req, res) {
         return res.sendStatus(500);
     }
 }
-
+async function getPostsOfFollowing(req,res) {
+    try {
+        const id = req.user;
+        const me = await prisma.user.findUnique({
+            where:{
+                id:Number(id)
+            },
+            select:{
+                following:{
+                    select:{
+                        id:true
+                    }
+                }
+            }
+        })
+        const followedIds = me ? me.following.map((user)=> user.id) : [];
+        const postsOfFollowing = await prisma.post.findMany({
+            where:{
+                userId:{
+                    in: followedIds
+                }
+            },include:{
+                user:{
+                    select:{
+                        username:true,
+                        id:true,
+                        fullName:true,
+                        picture:true
+                    }
+                },
+                _count:{
+                    select:{
+                        likes:true,
+                        comments:true
+                    }
+                }
+            }
+        })
+        console.log(postsOfFollowing)
+        res.json({posts:postsOfFollowing})
+    } catch (error) {
+         return res.sendStatus(500);
+    }
+}
 async function getLikedPosts(req, res) {
     try {
         const id = req.user;
@@ -225,5 +268,6 @@ export default {
     getPostsByAuthor,
     toggleLike,
     getLikedPosts,
-    getYourFeed
+    getYourFeed,
+    getPostsOfFollowing
 };

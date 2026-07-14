@@ -5,6 +5,7 @@ const postRouter=Router();
 
 postRouter.get("/me",postController.getUserPosts);
 postRouter.get("/",postController.getYourFeed)
+postRouter.get("/following",postController.getPostsOfFollowing)
 postRouter.get("/:postId/like",postController.toggleLike);
 postRouter.get("/liked",postController.getLikedPosts);
 postRouter.get("/:userId",postController.getPostsByAuthor)
