@@ -12,7 +12,8 @@ import ReplyModal from "./ReplyModal";
 
 function Content() {
       const navigate = useNavigate();
-      const { authFetch,user:{picture} } = useAuth();
+      const { authFetch, user: currentUser } = useAuth();
+      const picture = currentUser ? currentUser.picture : "";
   const [feed,setFeed] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"foryou" | "following">("foryou");
   const [draft, setDraft] = useState("");
@@ -31,7 +32,6 @@ function Content() {
             throw new Error("feed creation failed")
         }
        const {posts}=data;
-       console.log(posts);
        setFeed(posts);
     } catch (error) {
         console.error(error);

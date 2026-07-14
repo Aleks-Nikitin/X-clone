@@ -26,10 +26,10 @@ function Navbar() {
                     <h2 className="">Explore</h2>
         
                 </div>  
-                    <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
+                    <Link to={"/follow"} className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                                <UserPlus size={40} strokeWidth={1.25} />
                     <h2>Follow</h2>
-                </div>
+                </Link>
                 <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     <MessageCircle size={40} strokeWidth={1.25} />
                     <h2 className="">Chat</h2>
@@ -65,7 +65,7 @@ function Navbar() {
                 className="rounded-xl text-white p-2 w-full text-left flex gap-3 hover:bg-gray-900 transition-colors"
                 onClick={() => setShowUserMenu((open) => !open)}
               >
-                <img src={user.picture || profile_pic} alt="" className="w-8 h-8 rounded-full"/>
+                <img src={user?.picture || profile_pic} alt="" className="w-8 h-8 rounded-full"/>
                 <div className="">
                   <h2>{user?.fullName}</h2>
                   <h3 className="text-gray-300 text-xs">@{user?.username}</h3>

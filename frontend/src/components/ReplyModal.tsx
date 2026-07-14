@@ -10,7 +10,8 @@ type ReplyModalProps = {
 };
 
 function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
-  const { authFetch } = useAuth();
+  const { authFetch, user } = useAuth();
+  const picture = user ? user.picture : "";
   const [reply, setReply] = useState("");
 
   async function onSubmit(e: any) {
@@ -63,7 +64,7 @@ function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
 
         <div className="px-4 pb-2 flex gap-3">
           <div className="flex flex-col items-center">
-            <img src={profile_pic} className="w-10 h-10 rounded-full" />
+            <img src={post.user.picture || profile_pic} className="w-10 h-10 rounded-full" />
             <div className="w-0.5 flex-1 bg-gray-700 my-1 min-h-8" />
           </div>
           <div className="flex-1 min-w-0 pb-2">
@@ -83,7 +84,7 @@ function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
 
         <form onSubmit={onSubmit} className="px-4 pb-4">
           <div className="flex gap-3">
-            <img src={profile_pic} className="w-10 h-10 rounded-full shrink-0" />
+            <img src={picture||profile_pic} className="w-10 h-10 rounded-full shrink-0" />
             <div className="flex-1 min-w-0">
               <textarea
                 autoFocus

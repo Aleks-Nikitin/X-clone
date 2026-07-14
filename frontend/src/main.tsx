@@ -9,7 +9,7 @@ import Index from './components/Index.tsx'
 import Content from './components/Content.tsx'
 import PostDetail from './components/PostDetail.tsx'
 import Profile from './components/Profile.tsx'
-
+import Follow from './components/Follow.tsx'
 const router =createBrowserRouter([
   {
     path:"/",
@@ -29,7 +29,10 @@ const router =createBrowserRouter([
           {
             path:"profile/:userId",
             element: <Profile></Profile>
-          },
+          },{
+            path:"follow",
+            element:<Follow></Follow>
+          }
         ]
       },
       {

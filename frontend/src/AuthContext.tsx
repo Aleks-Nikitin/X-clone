@@ -5,7 +5,7 @@ type User = {
     username?: string;
     fullName?: string;
     email?: string;
-    pictture?:string;
+    picture?:string;
 };
 
 type AuthContextValue = {
