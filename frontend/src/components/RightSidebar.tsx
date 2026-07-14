@@ -38,7 +38,7 @@ function RightSidebar() {
 
         <button
           type="button"
-          className="w-full px-4 py-3 text-left text-sky-500 hover:bg-white/5 text-sm"
+          className="w-full px-4 py-3 text-left text-sky-500 hover:bg-white/5 text-sm hover:cursor-pointer"
         >
           Show more
         </button>

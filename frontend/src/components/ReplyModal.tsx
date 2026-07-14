@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { X } from "lucide-react";
 import { useAuth } from "../AuthContext";
 import profile_pic from "../assets/profile_default.png";
@@ -13,6 +14,8 @@ function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
   const { authFetch, user } = useAuth();
   const picture = user ? user.picture : "";
   const [reply, setReply] = useState("");
+  const isLongPost = post.text.length > 280;
+  const previewText = isLongPost ? `${post.text.slice(0, 280).trimEnd()}...` : post.text;
 
   async function onSubmit(e: any) {
     e.preventDefault();
@@ -73,8 +76,17 @@ function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
               <span className="text-gray-500 truncate">@{post.user?.username}</span>
             </div>
             <p className="mt-1 whitespace-pre-wrap wrap-break-word text-[15px]">
-              {post.text}
+              {previewText}
             </p>
+            {isLongPost && (
+              <Link
+                to={`/post/${post.id}`}
+                state={{ post }}
+                className="mt-2 inline-block text-sky-500 hover:underline text-sm"
+              >
+                Show more
+              </Link>
+            )}
             <p className="mt-3 text-gray-500 text-[15px]">
               Replying to{" "}
               <span className="text-sky-500">@{post.user?.username}</span>

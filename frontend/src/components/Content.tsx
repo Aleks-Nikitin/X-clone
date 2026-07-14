@@ -18,6 +18,7 @@ function Content() {
   const [activeTab, setActiveTab] = useState<"foryou" | "following">("foryou");
   const [draft, setDraft] = useState("");
   const [replyPost, setReplyPost] = useState<any>(null);
+  const [expandedPosts, setExpandedPosts] = useState<Record<number, boolean>>({});
 
   async function generateFeed() {
       try {
@@ -97,6 +98,12 @@ function Content() {
     }
 
   }
+  function toggleExpandedPost(postId: number) {
+    setExpandedPosts((current) => ({
+      ...current,
+      [postId]: !current[postId],
+    }));
+  }
   return (
     <div className="text-white min-h-screen">
       <header className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-gray-800">
@@ -157,6 +164,9 @@ function Content() {
         {feed.map((post) => {
           const {user} = post;
           const {_count} =post;
+          const isExpanded = expandedPosts[post.id];
+          const isLongPost = post.text.length > 280;
+          const postText = isLongPost && !isExpanded ? `${post.text.slice(0, 280).trimEnd()}...` : post.text;
           const formatPrismaDate = (dateString: string) => {
             if (!dateString) return '';
             
@@ -197,7 +207,19 @@ function Content() {
                 <span className="text-gray-500">·</span>
                 <span className="text-gray-500">{formatPrismaDate(post.createdAt)}</span>
               </div>
-              <p className="mt-1 whitespace-pre-wrap wrap-break-word">{post.text}</p>
+              <p className="mt-1 whitespace-pre-wrap wrap-break-word">{postText}</p>
+              {isLongPost && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleExpandedPost(post.id);
+                  }}
+                  className="mt-2 px-0 py-0 text-left text-sky-500 hover:underline text-sm hover:cursor-pointer"
+                >
+                  {isExpanded ? "Show less" : "Show more"}
+                </button>
+              )}
               <div className="flex justify-start gap-5 mt-3 max-w-md text-gray-500">
                 <button
                   type="button"
