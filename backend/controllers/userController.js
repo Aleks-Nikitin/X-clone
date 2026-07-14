@@ -5,17 +5,69 @@ async function getMe(req,res) {
         where:{
             id:Number(id)
         },
-        include:{
+        select:{
+            id:true,
+            username:true,
+            fullName:true,
+            email:true,
+            picture:true,
             _count:{
                 select:{
                     followers:true,
-                    following:true
+                    following:true,
+                    posts:true
                 }
             }
         }
     })
     return res.json({user:user});   
 }
+
+async function getUserById(req,res) {
+    try {
+        const myId = req.user;
+        const { userId } = req.params;
+        const user = await prisma.user.findUnique({
+            where:{
+                id:Number(userId)
+            },
+            select:{
+                id:true,
+                username:true,
+                fullName:true,
+                picture:true,
+                _count:{
+                    select:{
+                        followers:true,
+                        following:true,
+                        posts:true
+                    }
+                },
+                followers:{
+                    where:{
+                        id:Number(myId)
+                    },
+                    select:{
+                        id:true
+                    }
+                }
+            }
+        })
+        if(!user){
+            return res.sendStatus(404);
+        }
+        const { followers, ...profile } = user;
+        return res.json({
+            user:{
+                ...profile,
+                isFollowing: followers.length > 0
+            }
+        });
+    } catch (error) {
+        return res.sendStatus(500);
+    }
+}
+
 async function toggleFollowing(req,res) {
     try {
         const myId = req.user;
@@ -24,7 +76,7 @@ async function toggleFollowing(req,res) {
         return res.sendStatus(401)
     }
     if(Number(myId) === Number(targetUserId)){
-        return res.send(400).json({msg:"can't follow yourself"})
+        return res.status(400).json({msg:"can't follow yourself"})
     }
     const me = await prisma.user.findUnique({
         where:{
@@ -53,7 +105,7 @@ async function toggleFollowing(req,res) {
             }
           }
         })
-        return res.send(201).json({msg:"unfollowed a user",isFollowing:false})
+        return res.status(201).json({msg:"unfollowed a user",isFollowing:false})
     }else{
         await prisma.user.update({
             where:{
@@ -67,7 +119,7 @@ async function toggleFollowing(req,res) {
                 }
             }
         })
-        return res.send(201).json({msg:"followed a user",isFollowing:true})
+        return res.status(201).json({msg:"followed a user",isFollowing:true})
     }
     } catch (error) {
         res.sendStatus(500);
@@ -77,5 +129,6 @@ async function toggleFollowing(req,res) {
 }
 export default {
     getMe,
+    getUserById,
     toggleFollowing
 }

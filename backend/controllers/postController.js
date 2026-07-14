@@ -60,9 +60,18 @@ async function getPostsByAuthor(req, res) {
             where: { userId: Number(userId) },
             orderBy: { createdAt: 'desc' },
             include:{
+                user:{
+                    select:{
+                        username:true,
+                        fullName:true,
+                        picture:true,
+                        id:true
+                    }
+                },
                 _count:{
                     select:{
-                        likes:true
+                        likes:true,
+                        comments:true
                     }
                 }
             }
