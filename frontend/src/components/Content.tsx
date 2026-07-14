@@ -39,9 +39,33 @@ function Content() {
     }
   }
 
-  useEffect(()=>{
-    generateFeed()
-  },[authFetch])
+  useEffect(() => {
+    if (activeTab === "following") {
+      generateFollowingPosts();
+      return;
+    }
+
+     generateFeed();
+  }, [authFetch, activeTab]);
+
+  async function generateFollowingPosts() {
+      try {
+        const response= await authFetch(`${import.meta.env.VITE_BACKEND}/posts/following`,{
+            method:"GET",
+        })
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        if(!data){
+            throw new Error("feed following creation failed")
+        }
+       const {posts}=data;
+       setFeed(posts);
+    } catch (error) {
+        console.error(error);
+    }
+  }
  async function onSubmit(e:any) {
     e.preventDefault()
     try {
@@ -110,7 +134,9 @@ function Content() {
         <div className="flex">
           <button
             type="button"
-            onClick={() => setActiveTab("foryou")}
+            onClick={() => {
+              setActiveTab("foryou")
+            }}
             className={`flex-1 py-4 text-sm font-medium hover:bg-white/10 transition-colors relative ${
               activeTab === "foryou" ? "font-bold" : "text-gray-500"
             }`}
@@ -122,7 +148,9 @@ function Content() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("following")}
+            onClick={() => {
+              setActiveTab("following")
+            }}
             className={`flex-1 py-4 text-sm font-medium hover:bg-white/10 transition-colors relative ${
               activeTab === "following" ? "font-bold" : "text-gray-500"
             }`}
