@@ -37,7 +37,7 @@ function Content() {
     } catch (error) {
         console.error(error);
     }
-  }
+  } 
 
   useEffect(() => {
     if (activeTab === "following") {

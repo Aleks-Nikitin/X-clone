@@ -10,6 +10,7 @@ import Content from './components/Content.tsx'
 import PostDetail from './components/PostDetail.tsx'
 import Profile from './components/Profile.tsx'
 import Follow from './components/Follow.tsx'
+import Chat from './components/Chat.tsx'
 const router =createBrowserRouter([
   {
     path:"/",
@@ -32,6 +33,9 @@ const router =createBrowserRouter([
           },{
             path:"follow",
             element:<Follow></Follow>
+          },{
+            path:"chat",
+            element:<Chat></Chat>
           }
         ]
       },

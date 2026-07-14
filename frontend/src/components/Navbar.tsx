@@ -30,11 +30,11 @@ function Navbar() {
                                <UserPlus size={40} strokeWidth={1.25} />
                     <h2>Follow</h2>
                 </Link>
-                <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
+                <Link to={"/chat"} className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     <MessageCircle size={40} strokeWidth={1.25} />
                     <h2 className="">Chat</h2>
         
-                </div>  
+                </Link>  
                    <Link to={`/profile/${user?.id}`} className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     <UserRound size={40} strokeWidth={1.25} />
                     <h2 className="">Profile</h2>
