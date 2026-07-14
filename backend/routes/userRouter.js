@@ -5,6 +5,7 @@ const userRotuer= Router();
 
 userRotuer.get("/me", userController.getMe);
 userRotuer.get("/suggestions",userController.getSugestedFollowing);
+userRotuer.get("/all",userController.getAllUsers);
 userRotuer.get("/:targetUserId/follow",userController.toggleFollowing);
 userRotuer.get("/:userId", userController.getUserById);
 export default userRotuer;

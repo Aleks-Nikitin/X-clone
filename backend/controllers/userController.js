@@ -22,6 +22,25 @@ async function getMe(req,res) {
     })
     return res.json({user:user});   
 }
+async function getAllUsers(req,res) {
+    const id = req.user
+    try {
+        const users = await prisma.user.findMany({
+            where:{
+                id: {not:id}
+            },
+            select:{
+                id:true,
+                username:true,
+                fullName:true,
+                picture:true,
+            }
+        })
+        res.json({users})
+    } catch (error) {
+        return res.sendStatus(500);
+    }
+}
 async function getSugestedFollowing(req,res) {
     try {
         const id = req.user;
@@ -167,5 +186,6 @@ export default {
     getMe,
     getUserById,
     toggleFollowing,
-    getSugestedFollowing
+    getSugestedFollowing,
+    getAllUsers
 }
