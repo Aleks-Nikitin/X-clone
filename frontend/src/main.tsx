@@ -8,6 +8,7 @@ import App from './App.tsx'
 import Index from './components/Index.tsx'
 import Content from './components/Content.tsx'
 import PostDetail from './components/PostDetail.tsx'
+import Profile from './components/Profile.tsx'
 
 const router =createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router =createBrowserRouter([
           {
             path:"post/:postId",
             element: <PostDetail></PostDetail>
+          },
+          {
+            path:"profile/:userId",
+            element: <Profile></Profile>
           },
         ]
       },

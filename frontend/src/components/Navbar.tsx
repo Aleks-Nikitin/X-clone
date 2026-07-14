@@ -16,10 +16,10 @@ function Navbar() {
           <header className="sticky top-0 self-start flex flex-col h-screen w-[275px] shrink-0 p-4 border-r border-gray-800 overflow-y-auto">
             <div className="flex flex-col text-white items-baseline text-xl gap-2.5 flex-1">
                 <Link to={"/"} className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors"><XLogo size={28} /></Link>
-                <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
+                <Link to={"/"} className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     <House size={40} strokeWidth={1.25} />
                     <h2>Home</h2>
-                </div>
+                </Link>
                    <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     <Search size={40} strokeWidth={1.25} className=""/>
                     <h2 className="">Explore</h2>
@@ -34,11 +34,11 @@ function Navbar() {
                     <h2 className="">Chat</h2>
         
                 </div>  
-                   <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
+                   <Link to={`/profile/${user?.id}`} className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     <UserRound size={40} strokeWidth={1.25} />
                     <h2 className="">Profile</h2>
         
-                </div>  
+                </Link>  
                  <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                     
                     <button className="bg-white text-black text-[1rem] rounded-4xl border-8 px-15.5 py-2 cursor-pointer">
