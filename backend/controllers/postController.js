@@ -19,8 +19,9 @@ async function getUserPosts(req, res) {
         return res.sendStatus(500);
     }
 }
-async function getAllPosts(req,res) {
+async function getYourFeed(req,res) {
     try {
+        const id = req.user;
         const posts= await prisma.post.findMany({
             take:5,
             include:{
@@ -40,6 +41,14 @@ async function getAllPosts(req,res) {
                     userId:true,
                 }
             },
+            likes: {
+                where: {
+                    userId: Number(id),
+                },
+                select: {
+                    userId: true,
+                },
+            },
             _count:{
                 select:{
                     comments:true,
@@ -47,7 +56,11 @@ async function getAllPosts(req,res) {
                 }
             }
         }});
-        return res.json({posts});
+        const postsWithLikeState = posts.map(({ likes, ...post }) => ({
+            ...post,
+            isLiked: likes.length > 0,
+        }));
+        return res.json({posts: postsWithLikeState});
     } catch (error) {
         return res.sendStatus(500);
     }
@@ -212,5 +225,5 @@ export default {
     getPostsByAuthor,
     toggleLike,
     getLikedPosts,
-    getAllPosts
+    getYourFeed
 };

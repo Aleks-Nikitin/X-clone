@@ -4,8 +4,8 @@ import authController from '../controllers/authController.js';
 const postRouter=Router();
 
 postRouter.get("/me",postController.getUserPosts);
-postRouter.get("/",postController.getAllPosts)
-postRouter.post("/:postId/like",postController.toggleLike);
+postRouter.get("/",postController.getYourFeed)
+postRouter.get("/:postId/like",postController.toggleLike);
 postRouter.get("/liked",postController.getLikedPosts);
 postRouter.get("/:userId",postController.getPostsByAuthor)
 postRouter.put("/:postId",postController.updatePost);
