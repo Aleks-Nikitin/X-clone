@@ -65,7 +65,38 @@ function Content() {
 
 
   }
+  async function handleLike(postId:number) {
+    try {
+        const response= await authFetch(`${import.meta.env.VITE_BACKEND}/posts/${postId}/like`,{
+            method:"GET",
+        })
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        if(!data){
+            throw new Error("like failed")
+        }
+       console.log(data.msg);
+       setFeed((currentFeed) =>
+        currentFeed.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                isLiked: data.isLiked,
+                _count: {
+                  ...post._count,
+                  likes: Math.max(0, post._count.likes + (data.isLiked ? 1 : -1)),
+                },
+              }
+            : post
+        )
+      );
+    } catch (error) {
+        console.error(error);
+    }
 
+  }
   return (
     <div className="text-white min-h-screen">
       <header className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-gray-800">
@@ -181,9 +212,13 @@ function Content() {
                   </span>
                   <span className="text-xs">{_count.comments}</span>
                 </button>
-                <button type="button" className="flex items-center gap-1 hover:text-pink-500 group">
-                  <span className="p-2 rounded-full group-hover:bg-pink-500/10">
-                    <Heart size={18} />
+                <button onClick={(e)=>{
+                  e.stopPropagation();
+                  handleLike(post.id);
+                  
+                }} type="button" className={`flex items-center gap-1 group transition-colors ${post.isLiked ? "text-pink-500" : "text-gray-500 hover:text-pink-500"}`}>
+                  <span className={`p-2 rounded-full ${post.isLiked ? "bg-pink-500/10" : "group-hover:bg-pink-500/10"}`}>
+                    <Heart size={18} fill={post.isLiked ? "currentColor" : "none"} />
                   </span>
                   <span className="text-xs">{_count.likes}</span>
                 </button> 
