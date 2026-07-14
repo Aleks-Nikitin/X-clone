@@ -21,11 +21,6 @@ function Navbar() {
                     <House size={40} strokeWidth={1.25} />
                     <h2>Home</h2>
                 </Link>
-                   <div className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
-                    <Search size={40} strokeWidth={1.25} className=""/>
-                    <h2 className="">Explore</h2>
-        
-                </div>  
                     <Link to={"/follow"} className="flex items-center gap-1.5 cursor-pointer hover:font-bold transition-transform duration-200 hover:scale-105">
                                <UserPlus size={40} strokeWidth={1.25} />
                     <h2>Follow</h2>
