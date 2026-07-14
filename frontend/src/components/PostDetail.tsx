@@ -89,7 +89,7 @@ function PostDetail() {
 
       <article className="p-4 text-left border-b border-gray-800">
         <div className="flex gap-3">
-          <img src={profile_pic} className="w-10 h-10 rounded-full shrink-0" />
+          <img src={user.picture||profile_pic} className="w-10 h-10 rounded-full shrink-0" />
           <div className="min-w-0">
             <p className="font-bold truncate">{user?.fullName}</p>
             <p className="text-gray-500 truncate">@{user?.username}</p>
@@ -114,7 +114,7 @@ function PostDetail() {
       </article>
 
       <div className="border-b border-gray-800 p-4 flex gap-3">
-        <img src={profile_pic} className="w-10 h-10 rounded-full shrink-0" />
+        <img src={user.picture || profile_pic} className="w-10 h-10 rounded-full shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-gray-500 text-sm mb-1">
             Replying to <span className="text-sky-500">@{user?.username}</span>
@@ -149,7 +149,7 @@ function PostDetail() {
             key={comment.id}
             className="border-b border-gray-800 p-4 flex gap-3 text-left"
           >
-            <img src={profile_pic} className="w-10 h-10 rounded-full shrink-0" />
+            <img src={comment.user.picture ||profile_pic} className="w-10 h-10 rounded-full shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1 flex-wrap">
                 <span className="font-bold truncate">

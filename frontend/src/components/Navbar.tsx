@@ -3,6 +3,7 @@ import { Link,useNavigate } from "react-router"
 import { useAuth } from "../AuthContext.tsx"
 import { House,Search,UserPlus,MessageCircle,UserRound} from 'lucide-react';
 import XLogo from "./XLogo"
+import profile_pic from "../assets/profile_default.png";
 function Navbar() {
     const {logout,user} = useAuth();
      const navigate = useNavigate();
@@ -61,11 +62,14 @@ function Navbar() {
               )}
               <button
                 type="button"
-                className="rounded-xl text-white p-2 w-full text-left hover:bg-gray-900 transition-colors"
+                className="rounded-xl text-white p-2 w-full text-left flex gap-3 hover:bg-gray-900 transition-colors"
                 onClick={() => setShowUserMenu((open) => !open)}
               >
-                <h2>{user?.fullName}</h2>
-                <h3 className="text-gray-300 text-xs">@{user?.username}</h3>
+                <img src={user.picture || profile_pic} alt="" className="w-8 h-8 rounded-full"/>
+                <div className="">
+                  <h2>{user?.fullName}</h2>
+                  <h3 className="text-gray-300 text-xs">@{user?.username}</h3>
+                </div>
               </button>
             </div>
           </header>

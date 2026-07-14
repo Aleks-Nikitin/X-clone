@@ -12,7 +12,7 @@ import ReplyModal from "./ReplyModal";
 
 function Content() {
       const navigate = useNavigate();
-      const { authFetch } = useAuth();
+      const { authFetch,user:{picture} } = useAuth();
   const [feed,setFeed] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"foryou" | "following">("foryou");
   const [draft, setDraft] = useState("");
@@ -129,7 +129,7 @@ function Content() {
       </header>
 
       <div className="border-b border-gray-800 p-4 flex gap-3">
-        <img src={profile_pic} className="w-10 h-10 rounded-full"/>
+        <img src={picture || profile_pic} className="w-10 h-10 rounded-full"/>
         <div className="flex-1 min-w-0">
           <textarea
             value={draft}
@@ -177,7 +177,7 @@ function Content() {
             className="border-b border-gray-800 p-4 flex gap-3 hover:bg-white/3 cursor-pointer transition-colors text-left"
           >
             <img
-              src={profile_pic}
+              src={user.picture|| profile_pic}
               className="w-10 h-10 rounded-full"
               onClick={(e) => {
                 e.stopPropagation();
