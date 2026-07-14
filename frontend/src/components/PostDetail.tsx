@@ -88,10 +88,14 @@ function PostDetail() {
       </header>
 
       <article className="p-4 text-left border-b border-gray-800">
-        <div className="flex gap-3">
+        <div className="flex gap-3 hover:cursor-pointer"
+              onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/profile/${user.id}`);
+                }}>
           <img src={user.picture||profile_pic} className="w-10 h-10 rounded-full shrink-0" />
           <div className="min-w-0">
-            <p className="font-bold truncate">{user?.fullName}</p>
+            <p className="font-bold truncate hover:underline">{user?.fullName}</p>
             <p className="text-gray-500 truncate">@{user?.username}</p>
           </div>
         </div>
@@ -151,8 +155,11 @@ function PostDetail() {
           >
             <img src={comment.user.picture ||profile_pic} className="w-10 h-10 rounded-full shrink-0" />
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1 flex-wrap">
-                <span className="font-bold truncate">
+              <div className="flex items-center gap-1 flex-wrap hover:cursor-pointer" onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/profile/${comment.user.id}`);
+                }}>
+                <span className="font-bold truncate hover:underline">
                   {comment.user?.fullName || "User"}
                 </span>
                 <span className="text-gray-500 truncate">
