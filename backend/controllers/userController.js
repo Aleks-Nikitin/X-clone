@@ -17,7 +17,7 @@ async function getMe(req,res) {
                     following:true,
                     posts:true
                 }
-            }
+            },
         }
     })
     return res.json({user:user});   
@@ -105,13 +105,16 @@ async function getUserById(req,res) {
                     select:{
                         id:true
                     }
-                }
+                },
+                
             }
         })
         if(!user){
             return res.sendStatus(404);
         }
         const { followers, ...profile } = user;
+
+   
         return res.json({
             user:{
                 ...profile,
@@ -122,7 +125,79 @@ async function getUserById(req,res) {
         return res.sendStatus(500);
     }
 }
+ async function getUserFollowing(req,res) {
+        try {
+            const myId = req.user;
+            const { userId } = req.params;
+            const users = await prisma.user.findMany({
+                where:{
+                    followers:{
+                        some:{
+                            id:Number(userId)
+                        }
+                    }
+                },
+                select:{
+                    id:true,
+                    username:true,
+                    fullName:true,
+                    picture:true,
+                    followers:{
+                        where:{
+                            id:Number(myId)
+                        },
+                        select:{
+                            id:true
+                        }
+                    }
+                }
+            })
+            const usersWithFollowState = users.map(({ followers, ...user }) => ({
+                ...user,
+                isFollowing: followers.length > 0,
+            }));
+            return res.json({users: usersWithFollowState});
+        } catch (error) {
+            return res.sendStatus(500);
+        }
+    }
 
+    async function getUserFollowers(req,res) {
+        try {
+            const myId = req.user;
+            const { userId } = req.params;
+            const users = await prisma.user.findMany({
+                where:{
+                    following:{
+                        some:{
+                            id:Number(userId)
+                        }
+                    }
+                },
+                select:{
+                    id:true,
+                    username:true,
+                    fullName:true,
+                    picture:true,
+                    followers:{
+                        where:{
+                            id:Number(myId)
+                        },
+                        select:{
+                            id:true
+                        }
+                    }
+                }
+            })
+            const usersWithFollowState = users.map(({ followers, ...user }) => ({
+                ...user,
+                isFollowing: followers.length > 0,
+            }));
+            return res.json({users: usersWithFollowState});
+        } catch (error) {
+            return res.sendStatus(500);
+        }
+    }
 async function toggleFollowing(req,res) {
     try {
         const myId = req.user;
@@ -187,5 +262,7 @@ export default {
     getUserById,
     toggleFollowing,
     getSugestedFollowing,
-    getAllUsers
+    getAllUsers,
+    getUserFollowing,
+    getUserFollowers
 }
