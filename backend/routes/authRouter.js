@@ -10,4 +10,6 @@ authRotuer.get("/github/callback",
      passport.authenticate('github',{session:false,failureRedirect:`${process.env.FRONTEND_URL}/login?error=github_declined`}), 
     authController.authCallbackGithub);
 
+authRotuer.post("/guest", authController.guestSignIn);
+
 export default authRotuer;
