@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { UserRound } from "lucide-react";
 import XLogo from "./XLogo";
+import { useAuth } from "../AuthContext";
 
 function GitHubIcon() {
   return (
@@ -12,6 +14,9 @@ function GitHubIcon() {
 
 function Login() {
   const [searchParams] = useSearchParams();
+  const { loginWithSession } = useAuth();
+  const [guestError, setGuestError] = useState<string | null>(null);
+  const [guestLoading, setGuestLoading] = useState(false);
   const errorCode = searchParams.get("error");
 
   const errorMessages: Record<string, string> = {
@@ -24,6 +29,32 @@ function Login() {
   function signInWithGithub(e: React.FormEvent) {
     e.preventDefault();
     window.location.href = `${import.meta.env.VITE_BACKEND}/auth/github`;
+  }
+
+  async function continueAsGuest() {
+    if (guestLoading) return;
+    setGuestError(null);
+    setGuestLoading(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND}/auth/guest`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        setGuestError("Could not sign in as guest. Please try again.");
+        return;
+      }
+      const data = await res.json();
+      if (!data?.accessToken || !data?.user) {
+        setGuestError("Could not sign in as guest. Please try again.");
+        return;
+      }
+      loginWithSession(data.accessToken, data.user);
+    } catch {
+      setGuestError("Could not sign in as guest. Please try again.");
+    } finally {
+      setGuestLoading(false);
+    }
   }
 
   return (
@@ -51,10 +82,12 @@ function Login() {
           <div className="space-y-3 mb-8">
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 border border-gray-600 rounded-full py-3 px-4 font-bold hover:bg-white/10 transition-colors cursor-pointer"
+              onClick={continueAsGuest}
+              disabled={guestLoading}
+              className="w-full flex items-center justify-center gap-3 border border-gray-600 rounded-full py-3 px-4 font-bold hover:bg-white/10 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <UserRound size={20} />
-              Continue as guest
+              {guestLoading ? "Signing in…" : "Continue as guest"}
             </button>
 
             <form onSubmit={signInWithGithub}>
@@ -68,8 +101,10 @@ function Login() {
             </form>
           </div>
 
-          {errorCode && errorMessages[errorCode] && (
-            <p className="text-red-400 text-sm mb-4">{errorMessages[errorCode]}</p>
+          {(guestError || (errorCode && errorMessages[errorCode])) && (
+            <p className="text-red-400 text-sm mb-4">
+              {guestError || errorMessages[errorCode!]}
+            </p>
           )}
 
           <p className="text-gray-500 text-xs leading-relaxed">

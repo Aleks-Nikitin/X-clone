@@ -15,6 +15,7 @@ type AuthContextValue = {
     user: User | null;
     setUser: (u: User | null) => void;
     isLoading: boolean;
+    loginWithSession: (accessToken: string, user: User) => void;
     logout: () => Promise<void>;
 };
 
@@ -125,6 +126,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return response;
     }, []);
 
+    const loginWithSession = useCallback((token: string, nextUser: User) => {
+        setAccessToken(token);
+        accessTokenRef.current = token;
+        setUser(nextUser);
+        setIsLoading(false);
+    }, []);
+
     const logout = useCallback(async () => {
         try {
             await fetch(`${import.meta.env.VITE_BACKEND}/logout`, { method: "GET", credentials: "include" });
@@ -137,7 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ accessToken, setAccessToken, authFetch, user, setUser, isLoading, logout }}>
+        <AuthContext.Provider value={{ accessToken, setAccessToken, authFetch, user, setUser, isLoading, loginWithSession, logout }}>
             {children}
         </AuthContext.Provider>
     );
