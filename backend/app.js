@@ -1,4 +1,6 @@
 import express,{urlencoded} from "express";
+import {createServer} from "http"
+import { Server } from "socket.io";
 import authRotuer from "./routes/authRouter.js";
 import userRotuer from "./routes/userRouter.js";
 import refreshRouter from "./routes/refreshRouter.js";
@@ -11,6 +13,14 @@ import "./controllers/passportController.js"
 import postRouter from "./routes/postRouter.js";
 import commentRouter from "./routes/commentRouter.js";
 const app =express();
+const httpServer = createServer(app);
+const io = new Server(httpServer,{
+    cors:{
+        origin:process.env.FRONTEND_URL,
+        credentials:true
+    }
+})
+
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials:true
@@ -27,8 +37,24 @@ app.use('/posts',postRouter);
 app.use("/chats",chatRouter)
 app.use('/comments',commentRouter)
 
+io.on("conncetion",(socket)=>{
+    console.log(`User connected ${socket.id}`)
+    socket.on("join_chat",(chatId)=>{
+        socket.join(`chat_${chatId}`);
+        console.log(`Socket ${socket.id} joined room: chat_${chatId}`);
+    })
+    socket.on("leave_chat",(chatId)=>{
+        socket.leave(`chat_${chatId}`)
+    })
+    socket.on("send_message",(messagePayload)=>{
+        socket.to(`chat_${messagePayload.chatId}`).emit("receive_message",messagePayload);
+    })
+    socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
+})
 
-app.listen(3000,"localhost",(err)=>{
+httpServer.listen(3000,"localhost",(err)=>{
     if(err){
         throw new Error("server is down");
         

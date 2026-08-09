@@ -237,7 +237,6 @@ async function getPostsOfFollowing(req,res) {
                 }
             }
         })
-        console.log(postsOfFollowing)
         res.json({posts:postsOfFollowing})
     } catch (error) {
          return res.sendStatus(500);
