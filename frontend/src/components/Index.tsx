@@ -10,7 +10,7 @@ function Index() {
 
   return (
     <div className="flex w-full justify-center">
-      <div className={`w-full shrink-0 border-r border-gray-800 ${isChatPage ? "max-w-[950px]" : "max-w-[600px]"}`}>
+      <div className={`w-full min-w-0 border-r border-gray-800 ${isChatPage ? "max-w-[950px]" : "max-w-[600px]"}`}>
         <Outlet context={{ activeChats, setActiveChats }} />
       </div>
       {!isChatPage && (

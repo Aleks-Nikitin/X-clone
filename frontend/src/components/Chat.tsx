@@ -1,5 +1,5 @@
 import { useEffect, useState,useRef, type Dispatch, type SetStateAction } from "react";
-import { Search, ArrowUp } from "lucide-react";
+import { Search, ArrowUp, ArrowLeft } from "lucide-react";
 import { useAuth } from "../AuthContext";
 import { useNavigate, useOutletContext } from "react-router"
 import profile_pic from "../assets/profile_default.png";
@@ -143,8 +143,8 @@ useEffect(()=>{
   }
 
   return (
-    <div className="text-white min-h-screen flex">
-      <section className="w-[360px] shrink-0 border-r border-gray-800 min-h-screen">
+    <div className="text-white min-h-screen flex flex-col md:flex-row">
+      <section className={`${selectedUser ? "hidden md:flex" : "flex"} flex-col w-full md:w-[360px] shrink-0 border-r border-gray-800 min-h-screen`}>
         <header className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-gray-800 p-4">
           <h1 className="text-xl font-bold text-left">Messages</h1>
           <div className="relative mt-4">
@@ -218,9 +218,9 @@ useEffect(()=>{
 
       </section>
 
-      <section className="flex-1 min-w-0 min-h-screen flex flex-col">
+      <section className={`${!selectedUser ? "hidden md:flex" : "flex"} flex-1 min-w-0 min-h-screen flex-col`}>
         {!selectedUser && (
-          <div className="flex-1 flex items-center justify-center px-10 text-left">
+          <div className="flex-1 flex items-center justify-center px-4 md:px-10 text-left">
             <div className="max-w-sm">
               <h2 className="text-3xl font-bold">Select a message</h2>
               <p className="text-gray-500 mt-2">
@@ -232,18 +232,31 @@ useEffect(()=>{
 
         {selectedUser && (
           <>
-            <header className="hover:cursor-pointer sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-gray-800 p-4 flex items-center gap-3"
-             onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/profile/${selectedUser.id}`);
-              }}>
+            <header className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-gray-800 p-4 flex items-center gap-3">
+              <button
+                type="button"
+                className="md:hidden p-1 rounded-full hover:bg-white/10 cursor-pointer shrink-0"
+                aria-label="Back to messages"
+                onClick={() => {
+                  setSelectedUser(null);
+                  setChatId(null);
+                  setMessages([]);
+                }}
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <div
+                className="hover:cursor-pointer flex items-center gap-3 min-w-0"
+                onClick={() => navigate(`/profile/${selectedUser.id}`)}
+              >
               <img
                 src={selectedUser.picture ? selectedUser.picture : profile_pic}
-                className="w-10 h-10 rounded-full object-cover"
+                className="w-10 h-10 rounded-full object-cover shrink-0"
               />
               <div className="min-w-0 text-left">
                 <p className="font-bold truncate">{selectedUser.fullName}</p>
                 <p className="text-gray-500 text-sm truncate">@{selectedUser.username}</p>
+              </div>
               </div>
             </header>
 
@@ -268,7 +281,7 @@ useEffect(()=>{
                     className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[70%] rounded-3xl px-4 py-2 text-left ${
+                      className={`max-w-[85%] md:max-w-[70%] rounded-3xl px-4 py-2 text-left ${
                         isMine
                           ? "bg-sky-500 text-white rounded-br-md"
                           : "bg-gray-800 text-white rounded-bl-md"

@@ -83,7 +83,6 @@ function Content() {
         }
        console.log("post created");
        setDraft("");
-       generateFeed();
     } catch (error) {
         console.error(error);
     }

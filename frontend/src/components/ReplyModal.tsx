@@ -51,7 +51,7 @@ function ReplyModal({ post, onClose, onSuccess }: ReplyModalProps) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-[600px] bg-black border border-gray-800 rounded-2xl overflow-hidden text-white text-left"
+        className="w-full max-w-[600px] max-h-[90vh] overflow-y-auto bg-black border border-gray-800 rounded-2xl text-white text-left"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-3">

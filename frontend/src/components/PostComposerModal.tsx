@@ -47,11 +47,11 @@ function PostComposerModal({ isOpen, onClose }: PostComposerModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 pt-24 px-4"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 pt-4 md:pt-24 px-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-[600px] bg-black border border-gray-800 rounded-2xl overflow-hidden text-white text-left shadow-2xl"
+        className="w-full max-w-[600px] max-h-[90vh] overflow-y-auto bg-black border border-gray-800 rounded-2xl text-white text-left shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-3 border-b border-gray-800">

@@ -15,7 +15,7 @@ return(
   return (
     <div className='flex min-h-screen text-left'>
     <Navbar onPostClick={() => setIsPostComposerOpen(true)}></Navbar>
-      <main className="flex-1 min-w-0">
+      <main className="flex-1 min-w-0 ml-[68px] md:ml-[275px]">
         <Outlet/>
       </main>
       <PostComposerModal

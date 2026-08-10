@@ -177,13 +177,13 @@ function Profile() {
         </div>
       </header>
 
-      <div className="h-48 bg-gray-800" />
+      <div className="h-32 md:h-48 bg-gray-800" />
 
       <div className="px-4 text-left">
-        <div className="flex justify-between items-end -mt-16 mb-3">
+        <div className="flex justify-between items-end -mt-12 md:-mt-16 mb-3">
           <img
             src={profile.picture || profile_pic}
-            className="w-32 h-32 rounded-full border-4 border-black bg-gray-700 object-cover"
+            className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-black bg-gray-700 object-cover"
           />
           {!isOwnProfile && (
             <button
