@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import { Search, ArrowUp } from "lucide-react";
 import { useAuth } from "../AuthContext";
 import profile_pic from "../assets/profile_default.png";
-
+import {socket} from "../sockets";
 type ChatUser = {
   id: number;
   username: string;
@@ -27,6 +27,7 @@ function formatMessageTime(dateString: string) {
 }
 
 function Chat() {
+  const chatIdRef = useRef<number | null>(null);
   const { user: me, authFetch } = useAuth();
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
@@ -52,7 +53,30 @@ function Chat() {
       console.error(error);
     }
   }
-
+  useEffect(() => {
+  chatIdRef.current = chatId;
+}, [chatId]);
+useEffect(()=>{
+    socket.connect();
+    if (chatId) {
+      socket.emit("join_chat", chatId);
+    }
+     socket.on("receive_message", (newMessage) => {
+          const incomingId = Number(newMessage.chatId);
+    const activeId = Number(chatIdRef.current);
+        if (incomingId === activeId) {
+      setMessages((prev) => [...prev, newMessage]);
+    }
+      
+    });
+      return () => {
+      socket.off("receive_message");
+      if(chatId){
+        socket.emit("leave_chat",chatId)
+      }
+      socket.disconnect();
+    };
+},[chatId])
   useEffect(() => {
     loadUsers();
   }, [authFetch]);
@@ -107,6 +131,7 @@ function Chat() {
       const data = await response.json();
       setMessages((currentMessages) => [...currentMessages, data]);
       setDraft("");
+      socket.emit("send_message",data)
     } catch (error) {
       console.error(error);
     }
