@@ -37,17 +37,21 @@ app.use('/posts',postRouter);
 app.use("/chats",chatRouter)
 app.use('/comments',commentRouter)
 
-io.on("conncetion",(socket)=>{
+io.on("connection",(socket)=>{
     console.log(`User connected ${socket.id}`)
     socket.on("join_chat",(chatId)=>{
-        socket.join(`chat_${chatId}`);
-        console.log(`Socket ${socket.id} joined room: chat_${chatId}`);
+        const roomName =`chat_${String(chatId)}`
+        socket.join(roomName);
+        console.log(`Socket ${socket.id} joined room: ${roomName}`);
     })
     socket.on("leave_chat",(chatId)=>{
-        socket.leave(`chat_${chatId}`)
+         const roomName =`chat_${String(chatId)}`
+        socket.leave(roomName)
+        console.log(`Socket left room: ${roomName}`);
     })
-    socket.on("send_message",(messagePayload)=>{
-        socket.to(`chat_${messagePayload.chatId}`).emit("receive_message",messagePayload);
+    socket.on("send_message",(data)=>{
+         const targetRoom = `chat_${String(data.chatId)}`
+        socket.to(targetRoom).emit("receive_message", data);
     })
     socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
