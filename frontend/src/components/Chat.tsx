@@ -1,9 +1,10 @@
-import { useEffect, useState,useRef } from "react";
+import { useEffect, useState,useRef, type Dispatch, type SetStateAction } from "react";
 import { Search, ArrowUp } from "lucide-react";
 import { useAuth } from "../AuthContext";
+import { useNavigate, useOutletContext } from "react-router"
 import profile_pic from "../assets/profile_default.png";
 import {socket} from "../sockets";
-type ChatUser = {
+export type ChatUser = {
   id: number;
   username: string;
   fullName: string;
@@ -27,11 +28,15 @@ function formatMessageTime(dateString: string) {
 }
 
 function Chat() {
+    const navigate = useNavigate();
   const chatIdRef = useRef<number | null>(null);
   const { user: me, authFetch } = useAuth();
+  const { activeChats, setActiveChats } = useOutletContext<{
+    activeChats: ChatUser[];
+    setActiveChats: Dispatch<SetStateAction<ChatUser[]>>;
+  }>();
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
-  const [activeChats, setActiveChats] = useState<ChatUser[]>([]); 
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [chatId, setChatId] = useState<number | null>(null);
@@ -227,7 +232,11 @@ useEffect(()=>{
 
         {selectedUser && (
           <>
-            <header className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-gray-800 p-4 flex items-center gap-3">
+            <header className="hover:cursor-pointer sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-gray-800 p-4 flex items-center gap-3"
+             onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/profile/${selectedUser.id}`);
+              }}>
               <img
                 src={selectedUser.picture ? selectedUser.picture : profile_pic}
                 className="w-10 h-10 rounded-full object-cover"
