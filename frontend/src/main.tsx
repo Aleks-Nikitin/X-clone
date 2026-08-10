@@ -11,10 +11,12 @@ import PostDetail from './components/PostDetail.tsx'
 import Profile from './components/Profile.tsx'
 import Follow from './components/Follow.tsx'
 import Chat from './components/Chat.tsx'
+import ErrorPage from './components/ErrorPage.tsx'
 const router =createBrowserRouter([
   {
     path:"/",
     element: <App></App>,
+    errorElement:<ErrorPage></ErrorPage>,
     children:[
       {
         element: <Index></Index>,
