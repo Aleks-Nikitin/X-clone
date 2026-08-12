@@ -25,6 +25,7 @@ async function authCallbackGithub(req,res,next) {
         })
         res.cookie("jwt", refreshToken,{
             secure: process.env.NODE_ENV ==="production",
+            sameSite: "none", 
             httpOnly:true,
             maxAge:2*24*60*60*1000,
         });
@@ -71,6 +72,7 @@ async function guestSignIn(req, res) {
         res.cookie("jwt", refreshToken, {
             secure: process.env.NODE_ENV === "production",
             httpOnly: true,
+            sameSite: "none", 
             maxAge: 2 * 24 * 60 * 60 * 1000,
         });
         return res.status(201).json({ accessToken, user });

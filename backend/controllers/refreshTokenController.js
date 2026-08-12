@@ -14,7 +14,7 @@ async function handleRefreshToken(req,res) {
         }
     });
     if(!userFound){
-        return res.status(403);
+        return res.sendStatus(403);
         
     }
 
