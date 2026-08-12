@@ -24,7 +24,7 @@ async function authCallbackGithub(req,res,next) {
         }
         })
         res.cookie("jwt", refreshToken,{
-            secure: process.env.NODE_ENV ==="production",
+            secure: true,
             sameSite: "none", 
             httpOnly:true,
             maxAge:2*24*60*60*1000,
@@ -70,7 +70,7 @@ async function guestSignIn(req, res) {
             data: { refreshToken },
         });
         res.cookie("jwt", refreshToken, {
-            secure: process.env.NODE_ENV === "production",
+            secure: true,
             httpOnly: true,
             sameSite: "none", 
             maxAge: 2 * 24 * 60 * 60 * 1000,
