@@ -58,7 +58,7 @@ io.on("connection",(socket)=>{
   });
 })
 
-httpServer.listen(3000,"localhost",(err)=>{
+httpServer.listen(process.env.PORT,"0.0.0.0",(err)=>{
     if(err){
         throw new Error("server is down");
         
