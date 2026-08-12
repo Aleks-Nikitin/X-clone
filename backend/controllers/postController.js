@@ -23,7 +23,15 @@ async function getYourFeed(req,res) {
     try {
         const id = req.user;
         const posts= await prisma.post.findMany({
-            take:5,
+            where:{
+                userId:{
+                    not:Number(id)
+                }
+            },
+            orderBy:[
+                {createdAt:"asc"},
+                {id:"asc"}
+            ],
             include:{
             user:{
                 select:{
@@ -60,7 +68,7 @@ async function getYourFeed(req,res) {
             ...post,
             isLiked: likes.length > 0,
         }));
-        return res.json({posts: postsWithLikeState});
+        return res.json({posts: postsWithLikeState.reverse()});
     } catch (error) {
         return res.sendStatus(500);
     }
@@ -237,7 +245,7 @@ async function getPostsOfFollowing(req,res) {
                 }
             }
         })
-        res.json({posts:postsOfFollowing})
+        res.json({posts:postsOfFollowing.reverse()})
     } catch (error) {
          return res.sendStatus(500);
     }

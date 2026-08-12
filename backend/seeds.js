@@ -3,11 +3,13 @@ import {prisma} from "./lib/prisma.js"
 
 
 async function main() {
+    await prisma.message.deleteMany();
     await prisma.like.deleteMany();
     await prisma.comment.deleteMany();
     await prisma.post.deleteMany();
+    await prisma.user.deleteMany();
     const createdUsers =[];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 30; i++) {
             const user = await prisma.user.create({
             data:{
                 email:faker.internet.email(),
