@@ -177,7 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 body: stored ? JSON.stringify({ refreshToken: stored }) : undefined,
             });
         } catch (e) {
-            // ignore
+         
         }
         clearStoredRefresh();
         setAccessToken(null);
