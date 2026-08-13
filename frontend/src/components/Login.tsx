@@ -49,7 +49,7 @@ function Login() {
         setGuestError("Could not sign in as guest. Please try again.");
         return;
       }
-      loginWithSession(data.accessToken, data.user);
+      loginWithSession(data.accessToken, data.user, data.refreshToken);
     } catch {
       setGuestError("Could not sign in as guest. Please try again.");
     } finally {

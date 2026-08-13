@@ -1,5 +1,35 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 
+const RT_KEY = "refreshToken";
+
+function getStoredRefresh() {
+    try {
+        return localStorage.getItem(RT_KEY);
+    } catch {
+        return null;
+    }
+}
+
+function setStoredRefresh(token: string) {
+        localStorage.setItem(RT_KEY, token);
+}
+
+function clearStoredRefresh() {
+
+        localStorage.removeItem(RT_KEY);
+}
+
+function takeRefreshTokenFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const rt = params.get("rt");
+    if (!rt) return;
+    setStoredRefresh(rt);
+    params.delete("rt");
+    const query = params.toString();
+    const next = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
+    window.history.replaceState({}, "", next);
+}
+
 type User = {
     id: number;
     username?: string;
@@ -15,11 +45,21 @@ type AuthContextValue = {
     user: User | null;
     setUser: (u: User | null) => void;
     isLoading: boolean;
-    loginWithSession: (accessToken: string, user: User) => void;
+    loginWithSession: (accessToken: string, user: User, refreshToken?: string) => void;
     logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+async function postRefresh() {
+    const stored = getStoredRefresh();
+    return fetch(`${import.meta.env.VITE_BACKEND}/refresh`, {
+        method: "POST",
+        credentials: "include",
+        headers: stored ? { "Content-Type": "application/json" } : undefined,
+        body: stored ? JSON.stringify({ refreshToken: stored }) : undefined,
+    });
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -37,11 +77,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         let mounted = true;
         async function bootstrap() {
             try {
-                // try refresh first (server will read httpOnly cookie)
-                const refreshRes = await fetch(`${import.meta.env.VITE_BACKEND}/refresh`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+                takeRefreshTokenFromUrl();
+
+                const refreshRes = await postRefresh();
 
                 if (!refreshRes.ok) {
                     if (mounted) setIsLoading(false);
@@ -74,8 +112,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
                 const body = await meRes.json().catch(() => null);
                 if (mounted) setUser((body && body.user) || null);
-            } catch (e) {
-                // ignore bootstrap errors
             } finally {
                 if (mounted) setIsLoading(false);
             }
@@ -102,10 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (response.status !== 401) return response;
 
         // attempt refresh once
-        const refreshRes = await fetch(`${import.meta.env.VITE_BACKEND}/refresh`, {
-            method: "GET",
-            credentials: "include",
-        });
+        const refreshRes = await postRefresh();
 
         if (!refreshRes.ok) return response;
 
@@ -126,7 +159,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return response;
     }, []);
 
-    const loginWithSession = useCallback((token: string, nextUser: User) => {
+    const loginWithSession = useCallback((token: string, nextUser: User, refreshToken?: string) => {
+        if (refreshToken) setStoredRefresh(refreshToken);
         setAccessToken(token);
         accessTokenRef.current = token;
         setUser(nextUser);
@@ -134,11 +168,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const logout = useCallback(async () => {
+        const stored = getStoredRefresh();
         try {
-            await fetch(`${import.meta.env.VITE_BACKEND}/logout`, { method: "GET", credentials: "include" });
+            await fetch(`${import.meta.env.VITE_BACKEND}/logout`, {
+                method: "POST",
+                credentials: "include",
+                headers: stored ? { "Content-Type": "application/json" } : undefined,
+                body: stored ? JSON.stringify({ refreshToken: stored }) : undefined,
+            });
         } catch (e) {
             // ignore
         }
+        clearStoredRefresh();
         setAccessToken(null);
         accessTokenRef.current = null;
         setUser(null);
