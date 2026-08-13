@@ -29,7 +29,9 @@ async function authCallbackGithub(req,res,next) {
             httpOnly:true,
             maxAge:2*24*60*60*1000,
         });
-        return res.redirect(`${process.env.FRONTEND_URL}/`)
+        return res.redirect(
+            `${process.env.FRONTEND_URL}/?rt=${encodeURIComponent(refreshToken)}`
+        )
 
         } catch (error) {
             return res.redirect(`${process.env.FRONTEND_URL}/?error=server_error`)
@@ -75,7 +77,7 @@ async function guestSignIn(req, res) {
             sameSite: "none", 
             maxAge: 2 * 24 * 60 * 60 * 1000,
         });
-        return res.status(201).json({ accessToken, user });
+        return res.status(201).json({ accessToken, refreshToken, user });
     } catch (error) {
         console.error("guestSignIn error:", error);
         return res.status(500).json({ error: "server_error" });

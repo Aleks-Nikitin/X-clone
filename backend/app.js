@@ -27,6 +27,7 @@ app.use(cors({
     credentials:true
 }));
 app.use(cookieParser());
+app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use("/refresh",refreshRouter);
 app.use("/auth",authRotuer);

@@ -1,13 +1,12 @@
 import jwt from "jsonwebtoken";
 import {prisma} from "../lib/prisma.js"
 import "dotenv/config";
+
 async function handleRefreshToken(req,res) {
-    const cookies = req.cookies;
-    if(!cookies?.jwt){
+    const refreshToken = req.cookies?.jwt || req.body?.refreshToken;
+    if(!refreshToken){
         return res.sendStatus(401)
-        
     }
-    const refreshToken = cookies.jwt;
      let userFound = await prisma.user.findUnique({
         where:{
             refreshToken: refreshToken
@@ -15,7 +14,6 @@ async function handleRefreshToken(req,res) {
     });
     if(!userFound){
         return res.sendStatus(403);
-        
     }
 
     jwt.verify(

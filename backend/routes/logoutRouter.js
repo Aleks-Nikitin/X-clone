@@ -3,5 +3,6 @@ import logoutController from "../controllers/logoutController.js";
 const logoutRouter = Router();
 
 logoutRouter.get("/",logoutController.handleLogout);
+logoutRouter.post("/",logoutController.handleLogout);
 
 export default logoutRouter;
